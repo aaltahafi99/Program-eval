@@ -1,0 +1,105 @@
+---
+title: "problem set#1"
+author: "Ali Altahafi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(forcats)
+library(dplyr)
+library(yarrr)
+library(tidyverse)
+```
+#loading data 
+```{r}
+data <- read.csv('yarrr_data.csv')
+data
+```
+#numerical variables, it is 11
+```{r}
+sapply(data, is.numeric)
+```
+#character variables are 6 
+
+#2.2, the oldest pirate is 46 
+
+```{r}
+max(data$age, na.rm=TRUE)
+```
+#2.3, calculate the mean, the mean is 170.22
+```{r}
+mean(data$height)
+```
+#the median is 169.86 or 170 
+```{r}
+median(data$height)
+```
+#the standard deviation is 12.38
+```{r}
+sd(data$height)
+```
+#2.4, average number owned by pirates is 2.81 or 3
+```{r}
+mean(data$parrots)
+```
+#the average number of parrots owned by sex. male = 2.66, female = 3.03, other = 2.28
+```{r}
+tapply(data$parrot, data$sex, mean)
+```
+#cerating a frequency table of beard length
+```{r}
+data %>%
+  select(beard.length) %>%
+  table() %>%
+  prop.table()
+```
+#generating a cross-tabulation of sword type and eyepatch 
+```{r}
+crossdata <- table(data$sword.type, data$eyepatch)
+print(crossdata)
+```
+```{r}
+set.seed(100)
+library(readr)
+faketucky <- read_csv("faketucky.csv")
+View(faketucky)
+```
+#changing student_id into a factor variable.  
+```{r}
+set.seed(100)
+Id_factor <- as.factor(faketucky$student_id)
+Id_factor
+str(Id_factor)
+```
+#running a t-test but there is an issue with levels
+```{r}
+set.seed(100)
+#na.omit(faketucky$male)
+#na.omit(faketucky$gpa)
+faketucky <- faketucky %>%
+  mutate(gpa = ifelse(gpa == 999, NA, gpa))
+faketucky <- faketucky %>%
+  mutate(gender = ifelse(faketucky$male == 1, "Males", "Females"))
+t.test(faketucky$gpa ~ faketucky$gender)
+```
+#ran a linear regression model to test for staistical significance. there is a signficant and negative correlation between gpa and being male. 
+```{r}
+set.seed(100)
+#lm(faketucky$gpa ~ faketucky$gender, data = faketucky) %>%
+  #summary()
+#make sure i ste it up correctly, I'll switch variables
+lm(faketucky$male ~ faketucky$gpa, data = faketucky) %>%
+  summary()
+#scatter.smooth(faketucky$male, faketucky$gpa)
+```
+
+
+
+
+
+
+
+
+
+
